@@ -1,0 +1,70 @@
+service: star-wars-serverless
+frameworkVersion: '2'
+
+provider:
+  name: aws
+  stage: dev
+  region: eu-west-1
+  runtime: nodejs12.x
+  lambdaHashingVersion: 20201221
+  environment:
+    SPECIES_TABLE: ${self:service}-${opt:stage, self:provider.stage}
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+          Resource: "*"
+
+resources:
+  Resources:
+    SpeciesDynamoDbTable:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          -
+            AttributeName: "id"
+            AttributeType: "S"
+        KeySchema:
+          -
+            AttributeName: "id"
+            KeyType: "HASH"
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        StreamSpecification:
+          StreamViewType: "NEW_AND_OLD_IMAGES"
+        TableName: ${self:provider.environment.SPECIES_TABLE}
+
+functions:
+  speciesList:
+    handler: src/main/application/list-species/list-species.list
+    memorySize: 128
+    description: Get species list.
+    events:
+      - http:
+          path: species
+          method: get
+
+  speciesCreate:
+    handler: src/main/application/create-species/create-species.create
+    memorySize: 128
+    description: Create species.
+    events:
+      - http:
+          path: species
+          method: post
+
+  planetFind:
+    handler: src/main/application/list-planets/list-planets.find
+    memorySize: 128
+    description: Get species list.
+    events:
+      - http:
+          path: planets/{id}
+          method: get

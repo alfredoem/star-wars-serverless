@@ -1,0 +1,255 @@
+openapi: 3.0.0
+servers:
+  - description: dev
+    url: https://{API_GATEWAY_URL}/dev/
+info:
+  description: API Star Wars
+  version: "1.0.0"
+  title: Star Wars Species & Planets
+paths:
+  "/species":
+    get:
+      summary: >
+        Obtiene las especies registradas.
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListSpeciesResponse"
+        "404":
+          $ref: "#/components/responses/NotFound"
+      tags:
+        - Species
+
+    post:
+      summary: >
+        Registra una especie.
+      responses:
+        "201":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreateSpeciesResponse"
+      tags:
+        - Species
+
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Species"
+        description: Estructura de datos de registro de especie
+
+  "/planets":
+    get:
+      summary: >
+        Obtiene los planetas registrados con atributos en Español.
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListPlanetsResponse"
+        "404":
+          $ref: "#/components/responses/NotFound"
+      tags:
+        - Planets
+
+components:
+  responses:
+    NotFound:
+      description: Sin resultados de búsqueda.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/NotFound"
+  schemas:
+    NotFound:
+      type: object
+      properties:
+        error:
+          type: boolean
+          example: true
+        code:
+          type: integer
+          example: 404
+        message:
+          type: string
+          example: "Not Found"
+        data:
+          type: object
+          example: {}
+
+    Species:
+      type: object
+      properties:
+        average_height:
+          type: string
+          example: "2.1"
+        average_lifespan:
+          type: string
+          example: "400"
+        classification:
+          type: string
+          example: "Mammal"
+        designation:
+          type: string
+          example: "Sentient"
+        eye_colors:
+          type: string
+          example: "blue, green, yellow, brown, golden, red"
+        hair_colors:
+          type: string
+          example: "black, brown"
+        homeworld:
+          type: string
+          example: "https://swapi.py4e.com/api/planets/14/"
+        language:
+          type: string
+          example: "Shyriiwook"
+        name:
+          type: string
+          example: "Wookie"
+        people:
+          type: array
+          items:
+            type: string
+          example: [
+            "https://swapi.py4e.com/api/people/13/"
+          ]
+        films:
+          type: array
+          items:
+            type: string
+          example: [
+            "https://swapi.py4e.com/api/films/1/",
+            "https://swapi.py4e.com/api/films/2/"
+          ]
+        skin_colors:
+          type: string
+          example: "gray"
+        url:
+          type: string
+          example: "https://swapi.py4e.com/api/species/3/"
+
+    SpeciesItem:
+      allOf:
+        - $ref: "#/components/schemas/Species"
+        - type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+              example: "bb658830-a4a3-11eb-bd91-1341d064ff41"
+            created:
+              type: string
+              example: "2014-12-10T16:44:31.486000Z"
+            edited:
+              type: string
+              example: "2014-12-10T16:44:31.486000Z"
+
+    Planet:
+      type: object
+      properties:
+        nombre:
+          type: string
+          example: "Corellia"
+        clima:
+          type: string
+          example: "temperate"
+        diametro:
+          type: string
+          example: "11000"
+        peliculas:
+          type: array
+          items:
+            type: string
+          example: []
+        gravedad:
+          type: string
+          example: "1 standard"
+        periodo_orbital:
+          type: string
+          example: "329"
+        poblacion:
+          type: string
+          example: "3000000000"
+        habitantes:
+          type: array
+          items:
+            type: string
+          example: [
+            "https://swapi.py4e.com/api/people/14/",
+            "https://swapi.py4e.com/api/people/18/"
+          ]
+        periodo_rotacion:
+          type: string
+          example: "25"
+        agua_superficial:
+          type: string
+          example: "70"
+        terreno:
+          type: string
+          example: "plains, urban, hills, forests"
+        url:
+          type: string
+          example: "https://swapi.py4e.com/api/planets/22/"
+        fecha_edicion:
+          type: string
+          example: "2014-12-20T20:58:18.456000Z"
+        fecha_creacion:
+          type: string
+          example: "2014-12-10T16:49:12.453000Z"
+
+    ListSpeciesResponse:
+      type: object
+      properties:
+        code:
+          type: number
+          example: 200
+        error:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: Datos obtenidos correctamente.
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/SpeciesItem"
+
+    CreateSpeciesResponse:
+      type: object
+      properties:
+        code:
+          type: number
+          example: 200
+        error:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: Los datos se guardaron con exito.
+        data:
+          $ref: "#/components/schemas/SpeciesItem"
+
+    ListPlanetsResponse:
+      type: object
+      properties:
+        code:
+          type: number
+          example: 200
+        error:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: Datos obtenidos correctamente.
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Planet"

@@ -1,0 +1,21 @@
+{
+  "name": "star-wars-serverless",
+  "version": "1.0.0",
+  "description": "Serverless Framework NodeJS API example",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest --verbose --config ./test/unit/jest.json",
+    "test-e2e": "make test-e2e"
+  },
+  "author": "Alfredo Espiritu <alfredo.espiritu.m@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "aws-sdk": "2.892.0",
+    "bluebird": "3.7.2",
+    "swapi-node": "0.6.0",
+    "uuid": "8.3.2"
+  },
+  "devDependencies": {
+    "jest": "26.4.2"
+  }
+}
